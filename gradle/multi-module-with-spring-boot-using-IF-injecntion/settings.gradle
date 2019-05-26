@@ -1,0 +1,13 @@
+rootProject.name="A_root"
+
+ include "A_comm"
+ include "A_web_comm"
+// // for A_a
+include "A_a_root:A_a_web"
+include "A_a_root:A_a_comm"
+include "A_a_root:A_a_b"
+// for A_b
+include "A_b_root:A_b_web"
+include "A_b_root:A_b_comm"
+include "A_b_root:A_b_b"
+

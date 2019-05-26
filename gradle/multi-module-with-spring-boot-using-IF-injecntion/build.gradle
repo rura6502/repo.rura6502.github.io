@@ -1,0 +1,141 @@
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+
+
+buildscript {
+  ext {
+    springBootVersion = '2.1.5.RELEASE'
+  }
+  group "io.github.rura6502"
+  
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+  }
+}
+
+subprojects {
+
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+  apply plugin: 'org.springframework.boot'
+  apply plugin: 'io.spring.dependency-management'
+
+  repositories {
+    mavenCentral()
+  }
+
+  sourceCompatibility = 11
+
+  task initFolder {
+    if (!project.name.contains('root')) {
+      sourceSets*.java.srcDirs*.each {
+        if (!it.exists()) {
+          it.mkdirs()
+          new File(it.toString()
+                          + File.separatorChar
+                          + "io" + File.separatorChar
+                          + "github" + File.separatorChar
+                          + "rura6502" + File.separatorChar
+                          + "multimodule_test" + File.separatorChar
+                          + project.name).mkdirs();
+        }
+      }
+      sourceSets.main.resources.srcDirs.each {
+        if (!it.exists()) {
+          it.mkdirs()
+          if (project.name.contains('web')) {
+            new File(it.toString()
+                              + File.separatorChar
+                              + project.name
+                              + '-dev.properties').createNewFile()
+            new File(it.toString()
+                              + File.separatorChar
+                              + project.name
+                              + '-pro.properties').createNewFile()
+          }
+        }
+      }
+    }
+  }
+
+  dependencies {
+    // web_comm 을 제외한 모든 _comm 으로 끝나는 프로젝트는 A_comm 디펜던시를 가짐
+    if (Pattern.matches("^(A_)((?!web).)*(_comm)\$", project.name)) {
+      System.out.println("inject :A_comm to : " + project.name)
+      compile project(":A_comm")
+    }
+    // _web 으로 끝나는 프로젝트들은 모두 A_web_comm 디펜던시를 가짐
+    if (Pattern.matches("(A_)(\\S)+(_web)", project.name)) {
+      System.out.println("inject :A_web_comm to : " + project.name)
+      compile project(":A_web_comm")
+    }
+    // root 프로젝트를 제외한 하위 프로젝트는 같은 레벨의 하위 프로젝트에
+    // comm 프로젝트 디펜던시를 가짐
+    if (!project.name.contains("root")) {
+      Matcher forInjectComm = Pattern.compile("_(.*?)_[^(comm)]")
+                                                          .matcher(project.name);
+      if (forInjectComm.find()) {
+        String subProjectName = forInjectComm.group(1);
+        compile project (":A_" + subProjectName + "_root"
+                                                  + ":A_" + subProjectName + "_comm")
+      }
+    }
+  }
+
+  if (project.name.contains('root')) {
+    bootJar.enabled = false
+    jar.enabled = false
+  }
+  if (project.name.contains('comm')) {
+    bootJar.enabled = false
+    jar.enabled = true
+  }
+  if (!project.name.contains('web')) {
+    bootJar.enabled = false
+  }
+}
+
+project(":A_comm") {
+  version "0.0.1"
+}
+project(":A_web_comm") {
+  version "0.0.1"
+  dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-test'
+    compile 'com.h2database:h2'
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+  }
+}
+project(":A_a_root:A_a_comm") {
+  version "0.0.5"
+}
+project(":A_a_root:A_a_web") {
+  version "0.0.3"
+  bootJar {
+    mainClassName = "io.github.rura6502.multimodule_test.A_a_web.A_a_web_App.java"
+  }
+}
+project(":A_a_root:A_a_b") {
+  version "0.0.6"
+}
+project(":A_b_root:A_b_comm") {
+  version "0.0.7"
+}
+project(":A_b_root:A_b_web") {
+  version "0.0.2"
+  bootJar {
+    mainClassName = "io.github.rura6502.multimodule_test.A_b_web.A_b_web_App.java"
+  }
+  dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-webflux'
+  }
+}
+project(":A_b_root:A_b_b") {
+  version "0.0.9"
+}
