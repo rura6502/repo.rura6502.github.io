@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <input type="button" onclick="disconnect()" value="disconnect" />
+  <br />
+  <input type="text" id="message" />
+  <input type="button" onclick="send()" value="send"/>
+  <script>
+    
+    var ws;
+    function connect() {
+      ws = new WebSocket("ws://localhost:8080/websocket-test");
+      ws.onopen = function() {
+        console.log("socket is opend...");
+      }
+      ws.onmessage = function() {
+        console.log("message : " + event.data);
+      }
+      ws.onclose = function(event) {
+        console.log("socket was closed...")
+      }
+    }
+    connect();
+    function send() {
+      console.log("send data : " + document.getElementById("message").value);
+      ws.send(document.getElementById("message").value);
+    }
+    function disconnect() {
+      ws.close();
+      ws=null;
+    }
+  </script>
+</body>
+</html>

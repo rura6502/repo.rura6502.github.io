@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="./bower_components/jquery/dist/jquery.js"></script>
+<script src="./bower_components/sockjs/sockjs.js"></script>
+<script src="./bower_components/stomp-websocket/lib/stomp.js"></script>
+
+</head>
+<body>
+  <p>
+    <button id="connect" onclick="connect()">connect</button>
+    <button id="go" onclick="go()">go</button>
+  </p>
+  <img id="img" width="960" height="540">
+
+
+  </img>
+
+  <script>
+    var stompClient = null;
+    
+    function go() {
+      $.get("/go", null);
+    }
+  
+    function connect() {
+      var socket = new SockJS('/img-websocket');
+      stompClient = Stomp.over(socket);
+      stompClient.debug = null;
+      stompClient.connect({}, function(frame) {
+//         console.log('Connected : ' + frame);
+        stompClient.subscribe('/topic/img-test', function(data) {
+//           console.log(data.body);
+          $("#img").attr("src", data.body);
+        });
+      })
+    }
+  </script>
+</body>
+</html>

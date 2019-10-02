@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+  <input type="button" value="get token" onclick="getToken()" />
+  <input type="button" value="get data" onclick="getData()" />
+  <input type="button" value="get token using refresh refreshToken" onclick="getTokenUsingRefresh()" />
+  <div>token : <span id="token"></span></div>
+  <div>refresh : <span id="refresh"></span><div>
+  <div>expires_in : <span id="expires_in"></span><div>
+  <div id="data"></div>
+  <script>
+
+    var token;
+    var refreshToken;
+    
+
+    function getToken() {
+      var loginData = {
+        "username": "admin"
+        , "password": "admin1234"
+      }
+
+      $.ajax({
+        url: 'http://localhost:8080/login',
+        method: 'POST',
+        data: loginData
+      }).done(function(res) {
+        $("#token").text(res.access_token);
+        $("#refresh").text(res.refresh_token);
+        $("#expires_in").text(res.expires_in);
+
+        token = res.access_token;
+        refreshToken = res.refresh_token;
+      })
+    }
+    
+    function getData() {
+      $.ajax({
+        url: 'http://localhost:8080/api/books',
+        method: 'GET',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("Authorization", "Bearer " + token);
+        }, success: function(res) {
+          $("#data").text(JSON.stringify(res));
+        }, error: function(res) {
+          $("#data").text(JSON.stringify(res));
+        }
+      });
+    }
+  
+    function getTokenUsingRefresh() {
+
+      var _data = {
+        'refresh': refreshToken
+      }
+      $.ajax({
+        url: 'http://localhost:8080/refresh',
+        data: _data,
+        method: 'POST'
+        , success: function(res) {
+          $("#token").text(res.access_token);
+          $("#refresh").text(res.refresh_token);
+          $("#expires_in").text(res.expires_in);
+
+          token = res.access_token;
+          refreshToken = res.refresh_token;
+        }, error: function(res) {
+          $("#data").text(JSON.stringify(res));
+        }
+      });
+    }
+  </script>
+</body>
+</html>

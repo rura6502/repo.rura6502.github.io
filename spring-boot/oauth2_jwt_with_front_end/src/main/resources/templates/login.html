@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+</head>
+<body>
+  
+  <!-- <form method="POST" action="/cm/login"> -->
+    <input id="username" type="text" name="username" placeholder="username" value="admin"/>
+    <br />
+    <input id="password" type="text" name="password" placeholder="password" value="1234"/>
+    <br />
+    <input type="button" value="login" onclick="login()" />
+    <input type="button" value="print_token" onclick="print_token()" />
+    <input type="button" value="token_test_without_refresh_flow" onclick="call_api_without_refresh_flow()" />
+    <input type="button" value="token_test_with_refresh_flow" onclick="call_api_with_refresh_flow()" />
+
+  <!-- </form> -->
+  <script>
+
+    var access_token;
+    var refresh_token;
+
+    function login() {
+      var username = $("#username").val()
+      var password = $("#password").val()
+      var loginData = {
+        "username": username
+        , "password": password
+      }
+      console.log(loginData)
+      $.ajax({
+        url: "/cm/login"
+        , type: 'POST'
+        // , contentType: "application/x-www-form-urlencoded; charset=UTF-8"
+        , data: loginData
+        , dataType: "html"
+        , success: function(data, status, req) {
+          console.log(req.getAllResponseHeaders());
+          console.log(req.getResponseHeader("token"))
+          var headers =  JSON.parse(req.getResponseHeader("token"));
+          access_token = headers.access_token
+          refresh_token = headers.refresh_token
+        }
+      })
+    }
+    function print_token() {
+      console.log("access_token = " + access_token);
+      console.log("refresh_token = " + refresh_token);
+    }
+    function call_api_without_refresh_flow() {
+      $.ajax({
+        url: ""
+      })
+    }
+    function call_api_with_refresh_flow() {
+
+    }
+
+
+
+    // httpRequest = new XMLHttpRequest();
+      // // httpRequest.onreadystatechange = responseProcess;
+      
+      // httpRequest.open('POST', '/cm/login')
+      // httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      // httpRequest.send("username=" + username + "&password=" + password);
+      // httpRequest.onreadystatechange = function() {
+      //   console.log(httpRequest.getResponseHeader('token'));
+      //   responseToken = JSON.parse(httpRequest.getResponseHeader('token'))
+      //   var accessToken = responseToken['access_token'];
+      //   var refreshToken = responseToken['refresh_token'];
+
+      //   console.log(accessToken)
+      //   console.log(refreshToken)
+
+      //   // after reference http://jeonghwan-kim.github.io/2018/03/26/vue-authentication.html
+      // }
+  </script>
+</body>
+</html>
+
+
+

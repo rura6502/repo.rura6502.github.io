@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "CodeLens (Launch) - DemoApplication",
+      "request": "launch",
+      "mainClass": "io.iochord.dev.abcd.https_server.DemoApplication",
+      "projectName": "https_server"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-DemoApplication<http_client>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "io.iochord.dev.abcd.https_client.DemoApplication",
+      "projectName": "http_client",
+      "args": ""
+    }
+  ]
+}

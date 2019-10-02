@@ -1,0 +1,23 @@
+{
+  "name": "websocket-with-img",
+  "authors": [
+    "abcd <abcd@iochord.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/main/resources/static/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "sockjs": "^0.3.4",
+    "stomp-websocket": "^2.3.4"
+  }
+}

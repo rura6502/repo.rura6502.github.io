@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  this is event source test page
+  please see the debug console(chrome - F12)
+  <script>
+    if (!!window.EventSource) {
+      sse = new EventSource('/sse');
+    } else {
+    }
+    sse.onmessage = function (evt) {
+      // var el = document.getElementById('sse');
+      // el.appendChild(document.createTextNode(evt.data));
+      // el.appendChild(document.createElement('br'));
+      console.log(evt.data);
+    };
+  </script>
+</body>
+</html>

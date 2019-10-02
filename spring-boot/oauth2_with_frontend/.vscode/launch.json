@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "CodeLens (Launch) - DemoApplication",
+      "request": "launch",
+      "mainClass": "io.github.rura6502.authorization_server.DemoApplication",
+      "projectName": "authorization_server"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-DemoApplication<resource_server>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "mainClass": "io.github.rura6502.resource_server.DemoApplication",
+      "projectName": "resource_server",
+      "args": ""
+    }
+  ]
+}
