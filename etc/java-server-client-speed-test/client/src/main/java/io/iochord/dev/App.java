@@ -5,7 +5,7 @@ package io.iochord.dev;
 
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.Date;fron
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class App {
@@ -15,9 +15,10 @@ public class App {
   private static long start = System.currentTimeMillis();
 
   public static void main(String[] args) throws Exception {
-    // Socket socket = new Socket("localhost", 6666);
+    Socket socket = new Socket("localhost", 6666);
+    // Socket socket = new Socket("192.168.0.5", 6666);
     // Socket socket = new Socket("192.168.1.4", 50000);
-    Socket socket = new Socket("192.168.11.40", 50000);
+    // Socket socket = new Socket("192.168.11.40", 50000);
     InputStream input = socket.getInputStream();
 
     new Thread(() -> {
@@ -44,7 +45,7 @@ public class App {
         }
       }
     }).start();
-    byte[] bytes = new byte[32 * 1024000]; // 32_000K
+    byte[] bytes = new byte[32 * 1024 * 100]; // 32_000K
     while (true) {
       int read = input.read(bytes);
       if (read < 0)

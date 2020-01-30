@@ -28,5 +28,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+jar {
+  manifest {
+    attributes 'Main-Class': 'io.iochord.dev.App'
+  }
+}
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
 // Define the main class for the application
 mainClassName = 'io.iochord.dev.App'
