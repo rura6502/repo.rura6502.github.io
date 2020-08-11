@@ -77,6 +77,8 @@ public class DemoApplication {
         public void afterConnectionEstablished(WebSocketSession session) throws Exception {
           // 사용 준비 완료 콜백
           System.out.println("afterConnectionEstablished");
+          System.out.println(session.getAcceptedProtocol());
+          System.out.println(session.getBinaryMessageSizeLimit());
           log.error("### afterConnectionEstablished session={}", session);
         }
       

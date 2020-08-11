@@ -74,7 +74,7 @@ public class DemoApplication {
     WebSocketStompClient stompClient = new WebSocketStompClient(wsClient);
     stompClient.setMessageConverter(new StringMessageConverter());
     stompClient.setInboundMessageSizeLimit(200 * 1024 * 1024);
-    stompClient.connect("https://192.168.44.160:8443/api/tot/socket/", new StompHanlder());
+    stompClient.connect("https://localhost:16232/api/tot/socket", new StompHanlder());
 
   }
 
@@ -135,9 +135,8 @@ class StompHanlder implements StompSessionHandler {
           Throwable exception) {
         System.out.println("handleException");
       }
-
       @Override
       public void handleTransportError(StompSession session, Throwable exception) {
-        System.out.println("handleTransportError");
+        System.out.println(exception.getMessage());
       }
 }

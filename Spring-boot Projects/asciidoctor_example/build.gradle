@@ -1,0 +1,74 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.2.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'org.asciidoctor.jvm.convert' version '3.1.0'
+	id 'java'
+  id 'maven-publish'
+}
+
+group = 'io.github.rura6502'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+
+  jaxDoclet
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.h2database:h2'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+asciidoctor {
+  dependsOn test
+	sourceDir file('src/restdoc/snippets/')
+  sources {
+    include '**/*.adoc'
+  }
+  outputDir file('src/main/resources/static/docs/rest')
+}
+
+bootJar {
+
+  dependsOn asciidoctor, javadoc
+  // from ("${asciidoctor.outputDir}") {
+  //   into 'src/resources/static/docs'
+  // }
+}
+
+javadoc {
+  source = sourceSets.main.allJava
+  // destinationDir = new file("src/main/resources/static/javadoc")
+  destinationDir = file("src/main/resources/static/docs/java")
+  options.addBooleanOption('html5', true)
+
+}
