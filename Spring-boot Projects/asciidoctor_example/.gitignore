@@ -32,11 +32,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-
-
-
-### ascii doc ###
-docs/
-*.adoc
-#restdoc/

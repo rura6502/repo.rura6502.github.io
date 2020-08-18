@@ -1,7 +1,14 @@
+buildscript{
+  ext{
+    snippetsDir = file('build/generated-snippets')
+  }
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.3.2.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
   id 'org.asciidoctor.jvm.convert' version '3.1.0'
+  // id 'org.asciidoctor.convert' version '1.5.9'
 	id 'java'
   id 'maven-publish'
 }
@@ -22,9 +29,7 @@ repositories {
 	mavenCentral()
 }
 
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
-}
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -48,27 +53,35 @@ test {
 	useJUnitPlatform()
 }
 
+
+
+
 asciidoctor {
   dependsOn test
-	sourceDir file('src/restdoc/snippets/')
-  sources {
-    include '**/*.adoc'
-  }
-  outputDir file('src/main/resources/static/docs/rest')
+  inputs.dir snippetsDir
+	sourceDir 'src/restdoc/snippets/'
+  attributes \
+    'snippets': snippetsDir
+  // outputDir 'src/main/resources/static/docs/rest'
 }
 
 bootJar {
-
   dependsOn asciidoctor, javadoc
-  // from ("${asciidoctor.outputDir}") {
-  //   into 'src/resources/static/docs'
+  // from("${asciidoctor.outputDir}/html5"){
+  //   into 'static/docs'
   // }
+  from("${buildDir}/docs/asciidoc"){
+    into 'static/docs/rest'
+  }
+  from("${buildDir}/docs/javadoc"){
+    into 'static/docs/java'
+  }
 }
 
-javadoc {
-  source = sourceSets.main.allJava
-  // destinationDir = new file("src/main/resources/static/javadoc")
-  destinationDir = file("src/main/resources/static/docs/java")
-  options.addBooleanOption('html5', true)
+// javadoc {
+//   source = sourceSets.main.allJava
+//   // destinationDir = new file("src/main/resources/static/javadoc")
+//   destinationDir = file("src/main/resources/static/docs/java")
+//   options.addBooleanOption('html5', true)
 
-}
+// }
